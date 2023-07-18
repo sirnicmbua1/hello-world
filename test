@@ -1,0 +1,31 @@
+resource "aws_s3_bucket" "state" {
+  bucket        = "${data.aws_caller_identity.current.account_id}-sos-ritm1054003-build-state-bucket"
+  force_destroy = true
+
+  tags = local.tags
+
+  lifecycle_rule {
+    id      = "Expire30"
+    enabled = true
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+
+    expiration {
+      days = 30
+    }
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
